@@ -1,0 +1,34 @@
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the data
+data = """
+Date,META,TESLA,META YTD Change,TESLA YTD Change
+2024-01-02,346.2900085449219,248.4199981689453,0.0,0.0
+...
+2024-08-15,537.3300170898438,214.13999938964844,0.5516763517020143,-0.13799210623930427
+"""
+data = [line.split(',') for line in data.split('\n')[1:] if line]
+df = pd.DataFrame(data[1:], columns=data[0])
+df['Date'] = pd.to_datetime(df['Date'])
+for col in df.columns[1:]:
+    df[col] = pd.to_numeric(df[col])
+
+# Perform basic analysis
+meta_avg = df['META'].mean()
+tesla_avg = df['TESLA'].mean()
+meta_max = df['META'].max()
+tesla_max = df['TESLA'].max()
+meta_min = df['META'].min()
+tesla_min = df['TESLA'].min()
+
+# Visualize the data
+plt.figure(figsize=(10, 6))
+plt.plot(df['Date'], df['META'], label='META')
+plt.plot(df['Date'], df['TESLA'], label='TESLA')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.title('META vs TESLA Stock Prices')
+plt.legend()
+plt.show()

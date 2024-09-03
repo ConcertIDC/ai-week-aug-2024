@@ -1,0 +1,28 @@
+# python code
+import yfinance as yf
+import pandas as pd
+from datetime import datetime, date
+
+# Get the current year and today's date
+current_year = datetime.now().year
+today = date.today()
+
+# Download stock data from the start of the year to today
+meta_data = yf.download('META', start=f'{current_year}-01-01', end=today)
+tesla_data = yf.download('TSLA', start=f'{current_year}-01-01', end=today)
+
+# Create a DataFrame with the closing prices of META and TESLA
+df = pd.DataFrame({
+    'Date': meta_data.index,
+    'META_Close': meta_data['Close'],
+    'TESLA_Close': tesla_data['Close']
+})
+
+# Calculate the YTD change for each stock
+df['META_YTD_Change'] = (df['META_Close'] - df['META_Close'].iloc[0]) / df['META_Close'].iloc[0]
+df['TESLA_YTD_Change'] = (df['TESLA_Close'] - df['TESLA_Close'].iloc[0]) / df['TESLA_Close'].iloc[0]
+
+# Save the DataFrame to a CSV file
+df.to_csv('stock_price_ytd.csv', index=False)
+
+print("Data saved to stock_price_ytd.csv")
